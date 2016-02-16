@@ -15,14 +15,14 @@ namespace CampahApp
         public const int AH_OFFSET_ARRAYLOADED = 0x08;
         public const int AH_OFFSET_ARRAYSTRUCT = 0x20;
         public const int AH_OFFSET_FIRSTITEMID = 0x4;
-        public const int AH_OFFSET_ITEMID_INCREMENT = 0x40;
+        public const int AH_OFFSET_ITEMID_INCREMENT = 0x4C;
 
         public const String CAMPAH_EXTENSION = "Campah Save Files (*.chs)|*.chs";
 
-        //public const String MENU_SIG = "51A1????????5685c0752BA1";//"583d????????410888"; //"01b9????????e80419"; //"51a1????????563bc1753a";
+        public const String MENU_SIG = "8B 48 0C 85 C9 74 ?? 8B 51 08 85 D2 74 ?? 3B 05";//"583d????????410888"; //"01b9????????e80419"; //"51a1????????563bc1753a";
         //public const int MENU_OFFSET = 0x32;
         public const int MENU_INDEX_OFFSET = 0x4C;
         //public const int MENU_LENGTH_OFFSET = 0x58;
-        public const int MENU_LENGTH_OFFSET = 0x5A;
+        public const int MENU_LENGTH_OFFSET = 0x58;
     }
 }

@@ -12,6 +12,7 @@ namespace CampahApp
         private static ProcessMemoryReader _preader;
         private static IntPtr AhStructPointer { get; set; }
         private static IntPtr BidValPointer { get; set; }
+        private static IntPtr MenuStructurePointer { get; set; }
 
         static AuctionHouse()
         {
@@ -40,13 +41,13 @@ namespace CampahApp
                     SetProcessMemoryReader();
                 }
                 int byteswritten;
-                _preader.WriteProcessMemory((IntPtr)( (int)BidValPointer + Constants.BIDVAL_OFFSET ), BitConverter.GetBytes(value), out byteswritten);
+                _preader.WriteProcessMemory((IntPtr)((int)BidValPointer + Constants.BIDVAL_OFFSET), BitConverter.GetBytes(value), out byteswritten);
             }
-        } 
+        }
 
         public static int MenuIndex
         {
-            
+
             get
             {
                 return FFACEInstance.Instance.Menu.MenuIndex;
@@ -61,11 +62,11 @@ namespace CampahApp
         {
             get
             {
-                return 0;
+                return Read2Bytes(ReadPointer(ReadPointer(MenuStructurePointer, 0), 0), Constants.MENU_LENGTH_OFFSET) - 1;
             }
         }
 
-        public static AhItem Add(AhItem item)          
+        public static AhItem Add(AhItem item)
         {
             if (Items.ContainsKey(item.Name))
             {
@@ -116,14 +117,16 @@ namespace CampahApp
             pointer = Constants.AH_OFFSETS.Aggregate(pointer, ReadPointer);
 
             AhStructPointer = pointer;
-            BidValPointer = ReadPointer(ReadPointer(SigScan(Constants.BIDVAL_SIG),0),0);
+            BidValPointer = ReadPointer(ReadPointer(SigScan(Constants.BIDVAL_SIG), 0), 0);
+
+            MenuStructurePointer = new IntPtr(SigScan(Constants.MENU_SIG).ToInt32() + 10);
         }
 
         private static IntPtr ArrayPointer
         {
             get
             {
-                return ReadPointer((IntPtr)((int)AhStructPointer + Constants.AH_OFFSET_ARRAYSTRUCT),0);
+                return ReadPointer((IntPtr)((int)AhStructPointer + Constants.AH_OFFSET_ARRAYSTRUCT), 0);
             }
         }
 
@@ -165,7 +168,7 @@ namespace CampahApp
                                                                       + Constants.AH_OFFSET_ITEMID_INCREMENT * n));
             for (var i = 0; i < n; i++)
             {
-                itemids.Add((int) buffer.Read2Bytes(memloc + Constants.AH_OFFSET_FIRSTITEMID + Constants.AH_OFFSET_ITEMID_INCREMENT*i));
+                itemids.Add((int)buffer.Read2Bytes(memloc + Constants.AH_OFFSET_FIRSTITEMID + Constants.AH_OFFSET_ITEMID_INCREMENT * i));
             }
 
             CampahStatus.SetStatus("Item list read complete.");

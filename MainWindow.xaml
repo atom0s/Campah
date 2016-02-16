@@ -548,7 +548,7 @@
                                         <ColumnDefinition Width="100" />
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
-                                    <Button Margin="5" IsEnabled="False" Click="button_UpdateAHdatabase_Click" Panel.ZIndex="1"><!--IsEnabled="{Binding Mode,Converter={StaticResource ahparseenabledconverter}}">-->
+                                    <Button Margin="5" Click="button_UpdateAHdatabase_Click" Panel.ZIndex="1" IsEnabled="{Binding Mode,Converter={StaticResource ahparseenabledconverter}}">
                                         <Button.Content>
                                             <TextBlock Text="{Binding Mode,Converter={StaticResource ahparsebuttonconverter}}" TextWrapping="Wrap" TextTrimming="None" HorizontalAlignment="Stretch" TextAlignment="Center" />
                                         </Button.Content>                                        
