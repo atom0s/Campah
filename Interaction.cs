@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
-using FFACETools;
 using System.Text.RegularExpressions;
 
 namespace CampahApp
 {
+    using EliteMMO.API;
+
     class Interaction
     {
         Stack<int> _currentAddress = new Stack<int>();
@@ -31,7 +32,7 @@ namespace CampahApp
         {
             GotoMenu(address);
             Thread.Sleep((int)CampahStatus.Instance.GlobalDelay);
-            if (FFACEInstance.Instance.Menu.Selection == "Bid")
+            if (EliteAPIInstance.Instance.Menu.HelpName == "Bid")
                 return true;
             int max = AuctionHouse.MenuLength;
 
@@ -42,7 +43,7 @@ namespace CampahApp
                     int[] ids = ReadAHItems();
                     foreach (int id in ids)
                     {
-                        
+
                         var item = new AhItem(id, id.ToString(CultureInfo.InvariantCulture), false, address + "," + i);
                         if ((item = AuctionHouse.Add(item)) != null)
                         {
@@ -72,25 +73,25 @@ namespace CampahApp
             while (_currentAddress.Count > adr.Length)
             {
                 _currentAddress.Pop();
-                FFACEInstance.Instance.Windower.SendKeyPress(KeyCode.EscapeKey);
+                EliteAPIInstance.Instance.ThirdParty.KeyPress(Keys.ESCAPE);
                 Thread.Sleep((int)CampahStatus.Instance.GlobalDelay);
             }
             while (_currentAddress.Count > 0 && !IsMenuEqual(_currentAddress.ToArray(), adr))
             {
                 _currentAddress.Pop();
-                FFACEInstance.Instance.Windower.SendKeyPress(KeyCode.EscapeKey);
+                EliteAPIInstance.Instance.ThirdParty.KeyPress(Keys.ESCAPE);
                 Thread.Sleep((int)CampahStatus.Instance.GlobalDelay);
             }
             for (int i = _currentAddress.Count; i < adr.Length; i++)
             {
-                var helptxt = FFACEInstance.Instance.Menu.Selection;
+                var helptxt = EliteAPIInstance.Instance.Menu.HelpName;
                 if (helptxt != "Bid")
                 {
                     _currentAddress.Push(adr[i]);
                     AuctionHouse.MenuIndex = adr[i];
-                    Thread.Sleep((int) CampahStatus.Instance.GlobalDelay);
-                    FFACEInstance.Instance.Windower.SendKeyPress(KeyCode.NP_EnterKey);
-                    Thread.Sleep((int) CampahStatus.Instance.GlobalDelay);
+                    Thread.Sleep((int)CampahStatus.Instance.GlobalDelay);
+                    EliteAPIInstance.Instance.ThirdParty.KeyPress(Keys.NUMPADENTER);
+                    Thread.Sleep((int)CampahStatus.Instance.GlobalDelay);
                 }
                 else
                 {
@@ -113,16 +114,16 @@ namespace CampahApp
         private void GotoBidMenu()
         {
             CloseMenu();
-            while (!IsTargetValid(FFACEInstance.Instance.Target.Name) || FFACEInstance.Instance.NPC.Distance((short)FFACEInstance.Instance.Target.ID) >= 6.0)
+            while (!IsTargetValid(EliteAPIInstance.Instance.Target.GetTargetInfo().TargetName) || EliteAPIInstance.Instance.Entity.GetEntity((short)EliteAPIInstance.Instance.Target.GetTargetInfo().TargetIndex).Distance >= 6.0)
             {
-                FFACEInstance.Instance.Windower.SendKeyPress(KeyCode.TabKey);
+                EliteAPIInstance.Instance.ThirdParty.KeyPress(Keys.TAB);
                 Thread.Sleep((int)CampahStatus.Instance.GlobalDelay);
             }
-            FFACEInstance.Instance.Windower.SendKeyPress(KeyCode.NP_EnterKey);
+            EliteAPIInstance.Instance.ThirdParty.KeyPress(Keys.NUMPADENTER);
             Thread.Sleep((int)CampahStatus.Instance.GlobalDelay * 4);
             AuctionHouse.MenuIndex = 1;
             Thread.Sleep((int)CampahStatus.Instance.GlobalDelay);
-            FFACEInstance.Instance.Windower.SendKeyPress(KeyCode.NP_EnterKey);
+            EliteAPIInstance.Instance.ThirdParty.KeyPress(Keys.NUMPADENTER);
             Thread.Sleep((int)CampahStatus.Instance.GlobalDelay);
             _currentAddress.Clear();
             _currentAddress.Push(1);
@@ -130,9 +131,9 @@ namespace CampahApp
 
         public void CloseMenu()
         {
-            while (FFACEInstance.Instance.Menu.IsOpen)
+            while (EliteAPIInstance.Instance.Menu.IsMenuOpen)
             {
-                FFACEInstance.Instance.Windower.SendKeyPress(KeyCode.EscapeKey);
+                EliteAPIInstance.Instance.ThirdParty.KeyPress(Keys.ESCAPE);
                 Thread.Sleep((int)CampahStatus.Instance.GlobalDelay);
             }
             _currentAddress.Clear();
@@ -140,7 +141,7 @@ namespace CampahApp
 
         private void BidOnItem(ItemRequest item)
         {
-            if (FFACEInstance.Instance.Item.InventoryMax == FFACEInstance.Instance.Item.InventoryCount)
+            if (EliteAPIInstance.Instance.Inventory.GetContainerMaxCount(0) == EliteAPIInstance.Instance.Inventory.GetContainerCount(0))
                 StopBuying("Inventory Full");
             if (item.BoughtCount >= item.Quantity)
                 return;
@@ -197,7 +198,7 @@ namespace CampahApp
 
             while (bid <= item.Maximum && item.BoughtCount < item.Quantity)
             {
-                if (FFACEInstance.Instance.Item.InventoryMax == FFACEInstance.Instance.Item.InventoryCount)
+                if (EliteAPIInstance.Instance.Inventory.GetContainerMaxCount(0) == EliteAPIInstance.Instance.Inventory.GetContainerCount(0))
                     StopBuying("Inventory Full");
                 if (AuctionHouse.MenuIndex != index + stack)
                 {
@@ -205,48 +206,48 @@ namespace CampahApp
                     break;
                 }
 
-                FFACEInstance.Instance.Windower.SendKeyPress(KeyCode.EnterKey);
-                Thread.Sleep((int) CampahStatus.Instance.GlobalDelay);
+                EliteAPIInstance.Instance.ThirdParty.KeyPress(Keys.RETURN);
+                Thread.Sleep((int)CampahStatus.Instance.GlobalDelay);
                 AuctionHouse.MenuIndex = 2;
-                Thread.Sleep((int) CampahStatus.Instance.GlobalDelay);
-                FFACEInstance.Instance.Windower.SendKeyPress(KeyCode.EnterKey);
-                Thread.Sleep((int) CampahStatus.Instance.GlobalDelay*2);
+                Thread.Sleep((int)CampahStatus.Instance.GlobalDelay);
+                EliteAPIInstance.Instance.ThirdParty.KeyPress(Keys.RETURN);
+                Thread.Sleep((int)CampahStatus.Instance.GlobalDelay * 2);
                 if (!hasitems)
                 {
-                    if (FFACEInstance.Instance.Menu.Selection != "Price Set")
+                    if (EliteAPIInstance.Instance.Menu.HelpName != "Price Set")
                     {
                         CampahStatus.Instance.Status = item.ItemData.Name + " is unavailble on AH, Skipping...";
-                        FFACEInstance.Instance.Windower.SendKeyPress(KeyCode.EscapeKey);
-                        Thread.Sleep((int) CampahStatus.Instance.GlobalDelay);
+                        EliteAPIInstance.Instance.ThirdParty.KeyPress(Keys.ESCAPE);
+                        Thread.Sleep((int)CampahStatus.Instance.GlobalDelay);
                         break;
                     }
 
                     hasitems = true;
                 }
-                while (FFACEInstance.Instance.Menu.Selection != "Price Set")
+                while (EliteAPIInstance.Instance.Menu.HelpName != "Price Set")
                 {
                     Thread.Sleep(250);
                 }
 
                 AuctionHouse.BidValue = bid;
-CampahStatus.Instance.Status = string.Format("Bidding {0}g on {1}{2}", bid, item.ItemData.Name, item.Stack ? " stack." : ".");
-                
-                Thread.Sleep((int) CampahStatus.Instance.GlobalDelay);
-                FFACEInstance.Instance.Windower.SendKeyPress(KeyCode.EnterKey);
-                Thread.Sleep((int) CampahStatus.Instance.GlobalDelay);
+                CampahStatus.Instance.Status = string.Format("Bidding {0}g on {1}{2}", bid, item.ItemData.Name, item.Stack ? " stack." : ".");
+
+                Thread.Sleep((int)CampahStatus.Instance.GlobalDelay);
+                EliteAPIInstance.Instance.ThirdParty.KeyPress(Keys.RETURN);
+                Thread.Sleep((int)CampahStatus.Instance.GlobalDelay);
                 AuctionHouse.MenuIndex = 1;
-                Thread.Sleep((int) CampahStatus.Instance.GlobalDelay);
+                Thread.Sleep((int)CampahStatus.Instance.GlobalDelay);
                 var alert = new ChatAlert(new Regex(@".*You(.*)buy the .* for ([0-9,]*) gil\."));
                 Chatlog.Instance.AddAlert(alert);
-                FFACEInstance.Instance.Windower.SendKeyPress(KeyCode.EnterKey);
-                Thread.Sleep((int) CampahStatus.Instance.GlobalDelay);
-                FFACEInstance.Instance.Item.GetInventoryItemCount((ushort) item.ItemData.ID);
+                EliteAPIInstance.Instance.ThirdParty.KeyPress(Keys.RETURN);
+                Thread.Sleep((int)CampahStatus.Instance.GlobalDelay);
+                //EliteAPIInstance.Instance.Item.GetInventoryItemCount((ushort)item.ItemData.ID);
                 var overrideAlert = false;
                 int time = 0;
                 while (!overrideAlert && !alert.Completed)
                 {
-                    Thread.Sleep((int) CampahStatus.Instance.GlobalDelay);
-                    time += (int) CampahStatus.Instance.GlobalDelay;
+                    Thread.Sleep((int)CampahStatus.Instance.GlobalDelay);
+                    time += (int)CampahStatus.Instance.GlobalDelay;
                     if (time >= 20000)
                         overrideAlert = true;
                 }
@@ -256,8 +257,8 @@ CampahStatus.Instance.Status = string.Format("Bidding {0}g on {1}{2}", bid, item
                     item.BoughtCount = item.Quantity;
                     break;
                 }
-               
-               
+
+
                 if (alert.Result.Groups[1].Value.Contains("unable"))
                 {
                     if (bid < item.Minimum)
@@ -309,7 +310,7 @@ CampahStatus.Instance.Status = string.Format("Bidding {0}g on {1}{2}", bid, item
             RunningData.Instance.TotalSpent = 0;
             if (CampahStatus.Instance.BlockCommands)
             {
-                FFACEInstance.Instance.Windower.SendString("//mouse_blockinput;keyboard_blockinput;");
+                EliteAPIInstance.Instance.ThirdParty.SendString("//mouse_blockinput;keyboard_blockinput;");
             }
             ThreadManager.ThreadRunner(BuyProceedure);
         }
@@ -332,7 +333,7 @@ CampahStatus.Instance.Status = string.Format("Bidding {0}g on {1}{2}", bid, item
             Chatlog.Instance.ClearChatAlerts();
             if (CampahStatus.Instance.BlockCommands)
             {
-                FFACEInstance.Instance.Windower.SendString("//mouse_blockinput off;keyboard_blockinput off;");
+                EliteAPIInstance.Instance.ThirdParty.SendString("//mouse_blockinput off;keyboard_blockinput off;");
             }
             ThreadManager.StopThread(thread);
         }

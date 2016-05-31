@@ -9,11 +9,12 @@ using System.Windows.Input;
 using System.Net;
 using System.ComponentModel;
 using System.Xml;
-using FFACETools;
 using Microsoft.Win32;
 
 namespace CampahApp
 {
+    using EliteMMO.API;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -214,8 +215,8 @@ namespace CampahApp
                     return;
                 }
 
-                FFACEInstance.Instance = null; //needs to dispose of old
-                FFACEInstance.Instance = new FFACE(CampahStatus.Instance.Process.Id);
+                EliteAPIInstance.Instance = null; //needs to dispose of old
+                EliteAPIInstance.Instance = new EliteAPI(CampahStatus.Instance.Process.Id);
                 CampahStatus.SetStatus("Attached to " + CampahStatus.Instance.Process.MainWindowTitle);
             }
         }
@@ -330,7 +331,7 @@ namespace CampahApp
             var input = (TextBox)sender;
             if (e.Key == Key.Enter)
             {
-                FFACEInstance.Instance.Windower.SendString(input.Text);
+                EliteAPIInstance.Instance.ThirdParty.SendString(input.Text);
                 ChatInputBuffer.AddLine(input.Text);
             }
             
@@ -401,7 +402,7 @@ namespace CampahApp
         {
             if (string.IsNullOrEmpty(tb_ahtargetname.Text))
             {
-                string target = FFACEInstance.Instance.Target.Name;
+                string target = EliteAPIInstance.Instance.Target.GetTargetInfo().TargetName;
                 if (!string.IsNullOrEmpty(target.Trim()) && !RunningData.Instance.AhTargetList.Contains(new AhTarget(target)))
                     RunningData.Instance.AhTargetList.Add(new AhTarget(target));
             }
@@ -549,7 +550,7 @@ namespace CampahApp
                 int sid;
                 try
                 {
-                    sid = FFACEInstance.Instance.Player.GetSID;
+                    sid = EliteAPIInstance.Instance.Player.ServerId;
                 }
                 catch
                 {
@@ -584,8 +585,8 @@ namespace CampahApp
         }
     }
 
-    public static class FFACEInstance
+    public static class EliteAPIInstance
     {
-        public static FFACE Instance { get; set; }
+        public static EliteAPI Instance { get; set; }
     }
 }

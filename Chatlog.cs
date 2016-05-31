@@ -4,11 +4,12 @@ using System.ComponentModel;
 using System.Windows.Documents;
 using System.Linq;
 using System.Text.RegularExpressions;
-using FFACETools;
 using System.Windows.Media;
 
 namespace CampahApp
 {
+    using EliteMMO.API;
+
     class Chatlog : INotifyPropertyChanged
     {
         static Chatlog()
@@ -18,7 +19,7 @@ namespace CampahApp
         }
         public Chatlog()
         {
-            Lines = new List<FFACE.ChatTools.ChatLine>();
+            Lines = new List<EliteAPI.ChatEntry>();
             ChatLog = new FlowDocument();
             _alerts = new List<ChatAlert>();
             _filters = new List<ChatMode>();
@@ -31,7 +32,7 @@ namespace CampahApp
             _lasttells = new List<string>();
         }
 
-        public List<FFACE.ChatTools.ChatLine> Lines { get; set; }
+        public List<EliteAPI.ChatEntry> Lines { get; set; }
 
         public FlowDocument ChatLog { get; set; }
 
@@ -92,7 +93,7 @@ namespace CampahApp
             }
         }
 
-        private void AddLine(FFACE.ChatTools.ChatLine line)
+        private void AddLine(EliteAPI.ChatEntry line)
         {
             var para = new Paragraph();
             
@@ -105,7 +106,7 @@ namespace CampahApp
 
         public void Update()
         {
-            if (FFACEInstance.Instance == null)
+            if (EliteAPIInstance.Instance == null)
             {
                 return;
             }
@@ -118,18 +119,18 @@ namespace CampahApp
                 }
             }
 
-            FFACE.ChatTools.ChatLine chatline;
-            var lines = new List<FFACE.ChatTools.ChatLine>();
+            EliteAPI.ChatEntry chatline;
+            var lines = new List<EliteAPI.ChatEntry>();
 
-            while ((chatline = FFACEInstance.Instance.Chat.GetNextLine()) != null)
+            while ((chatline = EliteAPIInstance.Instance.Chat.GetNextChatLine()) != null)
             {
-                if (lines.Count > 0 && chatline.RawString[4] == lines[0].RawString[4])
+                if (lines.Count > 0 && chatline.Timestamp == lines[0].Timestamp)
                 {
                     lines[0].Text += chatline.Text;
                 }
                 else
                 {
-                    if (chatline.Type == ChatMode.RcvdTell)
+                    if (chatline.ChatType == (int)ChatMode.RcvdTell)
                     {
                         var findname = new Regex(@"(.*)>>.*");
                         _lasttells.Remove(findname.Matches(chatline.Text)[0].Groups[1].Value);
@@ -144,15 +145,15 @@ namespace CampahApp
             if (Lines.Count > 500)
                 Lines.RemoveRange(0, 200);
 
-            foreach (FFACE.ChatTools.ChatLine line in lines)
+            foreach (EliteAPI.ChatEntry line in lines)
             {
                 AddLine(line);
             }
             foreach (ChatAlert alert in _alerts)
             {
-                foreach (FFACE.ChatTools.ChatLine line in lines)
+                foreach (EliteAPI.ChatEntry line in lines)
                 {
-                    if (alert.Mode == ChatMode.Generic || alert.Mode == line.Type)
+                    if (alert.Mode == (int)ChatMode.Generic || alert.Mode == line.ChatType)
                     {
                         alert.ParseLine(line);
                     }
@@ -192,22 +193,23 @@ namespace CampahApp
         }
      
 
-        public Paragraph ProcessLine(FFACE.ChatTools.ChatLine chatline, Paragraph para)
+        public Paragraph ProcessLine(EliteAPI.ChatEntry chatline, Paragraph para)
         {
             if (para == null)
             {
                 throw new ArgumentNullException("para");
             }
 
-            if (!_filters.Contains(chatline.Type) && _filters.Count != 0)
+            if (!_filters.Contains((ChatMode)chatline.ChatType) && _filters.Count != 0)
             {
                 return null;
             }
 
             para = new Paragraph();
             var range = new TextRange(para.ContentStart, para.ContentEnd);
-            range.Text += "("+((int)chatline.Type).ToString("X2") + ")";
-            range.Text += chatline.Now;
+            range.Text += "("+((int)chatline.ChatType).ToString("X2") + ")";
+            //range.Text += chatline.Now;
+            range.Text += chatline.Timestamp; // unsure if this is correct for what its purpose is..
             
             range.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.SteelBlue);
             range.ApplyPropertyValue(TextElement.FontWeightProperty, System.Windows.FontWeights.Bold);
@@ -215,7 +217,7 @@ namespace CampahApp
 
             para.Inlines.Add(chatline.Text);
             range = new TextRange(endOfPrefix, para.ContentEnd);
-            range.ApplyPropertyValue(TextElement.ForegroundProperty, ChatColorConverter(chatline.Color));
+            range.ApplyPropertyValue(TextElement.ForegroundProperty, ChatColorConverter(chatline.ChatColor));
             range.ApplyPropertyValue(TextElement.FontWeightProperty, System.Windows.FontWeights.Bold);
             para.LineHeight = 0.5;
             return para;

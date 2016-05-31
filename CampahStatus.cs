@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using FFACETools;
 
 namespace CampahApp
 {
@@ -286,8 +285,8 @@ namespace CampahApp
             {
                 process = value;
                 
-                FFACE.ParseResources.UseFFXIDatFiles = true;
-                FFACE.ParseResources.LanguagePreference = FFACE.ParseResources.Languages.English;
+                //FFACE.ParseResources.UseFFXIDatFiles = true;
+                //FFACE.ParseResources.LanguagePreference = FFACE.ParseResources.Languages.English;
                 NotifyPropertyChanged("Process");
             }
         }

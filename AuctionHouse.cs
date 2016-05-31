@@ -50,11 +50,11 @@ namespace CampahApp
 
             get
             {
-                return FFACEInstance.Instance.Menu.MenuIndex;
+                return EliteAPIInstance.Instance.Menu.MenuIndex;
             }
             set
             {
-                FFACEInstance.Instance.Menu.MenuIndex = value;
+                EliteAPIInstance.Instance.Menu.MenuIndex = value;
             }
         }
 
