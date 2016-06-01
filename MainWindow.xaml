@@ -103,13 +103,13 @@
                     </Button.Content>
                 </Button>
                 <Image Grid.RowSpan="2" Grid.Column="1" Source="{Binding ItemData.Address,Converter={StaticResource itemiconconverter}}" />
-                <TextBlock Grid.Column="2" Grid.ColumnSpan="2" FontWeight="Bold">                                            
-                    <TextBlock.Text>                    
-                        <MultiBinding Converter="{StaticResource multitxtconverter}" ConverterParameter=" {0} - {1} " >                        
-                            <Binding Path="ItemData.Name" />            
-                            <Binding Path="Stack" Converter="{StaticResource stackconverter}" />            
+                <TextBlock Grid.Column="2" Grid.ColumnSpan="2" FontWeight="Bold">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource multitxtconverter}" ConverterParameter=" {0} - {1} " >
+                            <Binding Path="ItemData.Name" />
+                            <Binding Path="Stack" Converter="{StaticResource stackconverter}" />
                             <Binding Path="ItemData.Stackable" />
-                        </MultiBinding>                        
+                        </MultiBinding>
                     </TextBlock.Text>
                 </TextBlock>
                 <StackPanel Orientation="Horizontal" Grid.Column="4" Margin="5,0">
@@ -136,7 +136,7 @@
                                     </MultiBinding>
                                 </campah:NumericSpinnerControl.Visibility>
                             </campah:NumericSpinnerControl>
-                            <TextBlock Text="{Binding Maximum}" /> 
+                            <TextBlock Text="{Binding Maximum}" />
                         </Grid>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="3" Margin="5,0">
@@ -147,12 +147,12 @@
                                                           Value="{Binding Minimum}" IncrementValue="1" Tag="{Binding}"
                                                           HorizontalAlignment="Left" SmallChange="1" Precision="0" Panel.ZIndex="5" Height="Auto" 
                                                           VerticalAlignment="Top" IsTabStop="False" ValueChanged="NumericSpinnerControl_ValueChanged">
-                            <campah:NumericSpinnerControl.Visibility>
-                                <MultiBinding Converter="{StaticResource multivisibilityconverter}">
-                                    <Binding RelativeSource="{RelativeSource AncestorType=StackPanel, AncestorLevel=1,Mode=FindAncestor}" Path="IsMouseOver" />
-                                    <Binding RelativeSource="{RelativeSource AncestorType=StackPanel, AncestorLevel=1,Mode=FindAncestor}" Path="IsKeyboardFocusWithin" />
-                                </MultiBinding>
-                            </campah:NumericSpinnerControl.Visibility>
+                                <campah:NumericSpinnerControl.Visibility>
+                                    <MultiBinding Converter="{StaticResource multivisibilityconverter}">
+                                        <Binding RelativeSource="{RelativeSource AncestorType=StackPanel, AncestorLevel=1,Mode=FindAncestor}" Path="IsMouseOver" />
+                                        <Binding RelativeSource="{RelativeSource AncestorType=StackPanel, AncestorLevel=1,Mode=FindAncestor}" Path="IsKeyboardFocusWithin" />
+                                    </MultiBinding>
+                                </campah:NumericSpinnerControl.Visibility>
                             </campah:NumericSpinnerControl>
                             <TextBlock Text="{Binding Minimum}" />
                         </Grid>
@@ -297,7 +297,7 @@
                                             <ColumnDefinition />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                            <Label Content="Max Bid" />
+                                        <Label Content="Max Bid" />
                                         <Canvas Height="13" Width="22" Grid.Column="1">
                                             <Canvas.Background>
                                                 <ImageBrush ImageSource="images/ffxiah.jpg"/>
@@ -347,7 +347,7 @@
                                     <campah:NumericSpinnerControl x:Name="nb_bidInc" Grid.Column="1" FontSize="9" Width="60" 
                                                                   Grid.Row="1" Minimum="1" Value="1" IncrementValue="1" 
                                                                   HorizontalAlignment="Left" SmallChange="1" Precision="0" Panel.ZIndex="6" IsTabStop="False">
-<!--                                        <campah:NumericSpinnerControl.Maximum>
+                                        <!--                                        <campah:NumericSpinnerControl.Maximum>
                                             <MultiBinding Converter="{StaticResource diffconverter}" ConverterParameter=" {0} " >
                                                 <Binding Path="Value" ElementName="nb_maxBid" />
                                                 <Binding Path="Value" ElementName="nb_minBid" />
@@ -528,7 +528,7 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition />
                                     <RowDefinition Height="64"/>
-                                </Grid.RowDefinitions>                                
+                                </Grid.RowDefinitions>
                                 <Grid Margin="5" Grid.Row="0">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -537,7 +537,7 @@
                                     <TextBlock Text="{Binding Value,ElementName=sldr_delay,Converter={StaticResource delayconverter}}" />
                                     <Slider Value="{Binding GlobalDelay}" Grid.Row="1" Margin="0,0" Name="sldr_delay" Maximum="1000" Minimum="300" TickPlacement="TopLeft" SmallChange="50" Interval="33" LargeChange="100" TickFrequency="100" />
                                 </Grid>
-                                <StackPanel Grid.Row="1">                                    
+                                <StackPanel Grid.Row="1">
                                     <CheckBox Content="Block commands while running" IsChecked="{Binding BlockCommands}" Margin="5,0,5,5"/>
                                     <CheckBox Content="Allow automatic updates" IsChecked="{Binding AutomaticUpdates}" Margin="5,0,5,5" />
                                     <CheckBox Content="Always on top" IsChecked="{Binding AlwaysOnTop}" Margin="5,0,5,5" />
@@ -551,7 +551,7 @@
                                     <Button Margin="5" Click="button_UpdateAHdatabase_Click" Panel.ZIndex="1" IsEnabled="{Binding Mode,Converter={StaticResource ahparseenabledconverter}}">
                                         <Button.Content>
                                             <TextBlock Text="{Binding Mode,Converter={StaticResource ahparsebuttonconverter}}" TextWrapping="Wrap" TextTrimming="None" HorizontalAlignment="Stretch" TextAlignment="Center" />
-                                        </Button.Content>                                        
+                                        </Button.Content>
                                     </Button>
                                     <Grid Grid.Column="1">
                                         <Grid.RowDefinitions>
@@ -604,7 +604,7 @@
                                 <Grid Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="250"/>
-                                        <ColumnDefinition />                                        
+                                        <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -639,6 +639,40 @@
                                 </Grid>
                             </Grid>
                         </GroupBox>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="About">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Column="0" Grid.Row="0">
+                            <Label FontWeight="Bold" FontSize="18">Campah</Label>
+                            <Label HorizontalAlignment="Center">© 2011 PandySoft (golfandsurf)</Label>
+                        </StackPanel>
+                        <StackPanel Grid.Column="0" Grid.Row="1">
+                            <Label FontWeight="Bold" FontSize="18">Updates By</Label>
+                            <Label HorizontalAlignment="Center" Margin="0" Padding="0">h1pp0 - 2012 ~ 2014</Label>
+                            <Label HorizontalAlignment="Center" Margin="0" Padding="0">eradicate - 2014</Label>
+                            <Label HorizontalAlignment="Center" Margin="0" Padding="0">atom0s - 2015 ~ 2016</Label>
+                        </StackPanel>
+                        <StackPanel Grid.Column="0" Grid.Row="2">
+                            <Label FontWeight="Bold" FontSize="18">Powered By</Label>
+                            <Label HorizontalAlignment="Center" Margin="0" Padding="0">EliteAPI</Label>
+                            <Label HorizontalAlignment="Center" Margin="0" Padding="0" FontStyle="Italic">Previously FFACE</Label>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center">
+                            <Label>For updates and source code, visit:</Label>
+                            <Label>
+                                <Hyperlink NavigateUri="http://github.com/atom0s/Campah" RequestNavigate="Hyperlink_OnRequestNavigate">http://github.com/atom0s/Campah</Hyperlink>
+                            </Label>
+                        </StackPanel>
                     </Grid>
                 </TabItem>
             </TabControl>
